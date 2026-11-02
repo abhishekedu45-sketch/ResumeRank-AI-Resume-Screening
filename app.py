@@ -1,8 +1,9 @@
 import os
-
 import re
 
 import uuid
+
+
 
 from flask import (
 
@@ -22,6 +23,8 @@ from flask import (
 
 )
 
+
+
 from flask_mail import Mail, Message
 
 from werkzeug.utils import secure_filename
@@ -29,6 +32,8 @@ from werkzeug.utils import secure_filename
 from dotenv import load_dotenv
 
 from PyPDF2 import PdfReader
+
+
 
 from database import (
 
@@ -60,13 +65,23 @@ from database import (
 
 )
 
+
+
+
+
 # ============================================================
 
 # LOAD ENVIRONMENT VARIABLES
 
 # ============================================================
 
+
+
 load_dotenv()
+
+
+
+
 
 # ============================================================
 
@@ -74,22 +89,7 @@ load_dotenv()
 
 # ============================================================
 
+
+
 app = Flask(__name__)
 
-app.secret_key = os.getenv(
-
-    "SECRET_KEY",
-
-    "ai_resume_screening_secret_2026"
-
-)
-
-# ============================================================
-
-# EMAIL CONFIGURATION
-
-# ============================================================
-
-app.config["MAIL_SERVER"] = os.getenv(
-
-    "MAIL_SERVER",
