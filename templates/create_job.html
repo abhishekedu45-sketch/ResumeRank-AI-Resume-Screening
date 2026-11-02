@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Create Job Opening | ResumeRank</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Segoe UI", Arial, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background:
+                radial-gradient(circle at top left, #4f46e5 0%, transparent 35%),
+                radial-gradient(circle at bottom right, #9333ea 0%, transparent 35%),
+                #0f172a;
+            color: white;
+            padding: 30px;
+        }
+
+        .container {
+            max-width: 950px;
+            margin: auto;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .brand {
+            font-size: 22px;
+            font-weight: 800;
+        }
+
+        .back-btn {
+            text-decoration: none;
+            color: white;
+            background: rgba(255,255,255,0.12);
+            border: 1px solid rgba(255,255,255,0.18);
+            padding: 10px 18px;
+            border-radius: 12px;
+            transition: 0.3s;
+        }
+
+        .back-btn:hover {
+            background: rgba(255,255,255,0.22);
+            transform: translateY(-2px);
+        }
+
+        .card {
+            background: rgba(255,255,255,0.10);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 25px;
+            padding: 40px;
+            box-shadow: 0 25px 70px rgba(0,0,0,0.35);
+        }
+
+        .header {
+            margin-bottom: 32px;
+        }
+
+        .badge {
+            display: inline-block;
+            background: rgba(99,102,241,0.25);
+            color: #c7d2fe;
+            padding: 7px 14px;
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            margin-bottom: 14px;
+        }
+
+        h1 {
+            font-size: 34px;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #cbd5e1;
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            font-weight: 700;
+            margin-bottom: 9px;
+            color: #f8fafc;
+        }
+
+        .required {
+            color: #f87171;
+        }
+
+        input,
+        textarea {
+            width: 100%;
+            border: 1px solid rgba(255,255,255,0.16);
+            background: rgba(15,23,42,0.75);
+            color: white;
+            border-radius: 14px;
+            padding: 15px 17px;
+            outline: none;
+            font-size: 15px;
+            transition: 0.25s;
+        }
+
+        input::placeholder,
+        textarea::placeholder {
+            color: #94a3b8;
+        }
+
+        input:focus,
+        textarea:focus {
+            border-color: #818cf8;
+            box-shadow: 0 0 0 4px rgba(99,102,241,0.15);
+        }
+
+        textarea {
+            min-height: 230px;
+            resize: vertical;
+            line-height: 1.6;
+        }
+
+        .help {
+            margin-top: 8px;
+            color: #94a3b8;
+            font-size: 13px;
+        }
+
+        .submit-btn {
+            width: 100%;
+            border: none;
+            padding: 17px;
+            border-radius: 15px;
+            background: linear-gradient(135deg, #6366f1, #9333ea);
+            color: white;
+            font-size: 16px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: 0.3s;
+            box-shadow: 0 12px 30px rgba(99,102,241,0.30);
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 16px 35px rgba(99,102,241,0.45);
+        }
+
+        .info-box {
+            margin-top: 25px;
+            padding: 18px;
+            border-radius: 15px;
+            background: rgba(59,130,246,0.10);
+            border: 1px solid rgba(96,165,250,0.18);
+            color: #cbd5e1;
+            line-height: 1.6;
+            font-size: 14px;
+        }
+
+        .flash {
+            padding: 14px 18px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            background: rgba(239,68,68,0.15);
+            border: 1px solid rgba(239,68,68,0.3);
+            color: #fecaca;
+        }
+
+        @media (max-width: 650px) {
+            body {
+                padding: 15px;
+            }
+
+            .card {
+                padding: 25px;
+            }
+
+            h1 {
+                font-size: 27px;
+            }
+
+            .topbar {
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="topbar">
+        <div class="brand">🤖 ResumeRank</div>
+
+        <a href="{{ url_for('dashboard') }}" class="back-btn">
+            ← Dashboard
+        </a>
+    </div>
+
+    <div class="card">
+
+        <div class="header">
+            <div class="badge">AI-POWERED RECRUITMENT</div>
+
+            <h1>Create Job Opening</h1>
+
+            <p class="subtitle">
+                Add the job requirements and let AI screen and rank candidates.
+            </p>
+        </div>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <!-- IMPORTANT: POST must go to create_job_page -->
+        <form method="POST" action="{{ url_for('create_job_page') }}">
+
+            <div class="form-group">
+                <label>
+                    Job Title <span class="required">*</span>
+                </label>
+
+                <input
+                    type="text"
+                    name="title"
+                    placeholder="Example: Python Developer"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label>
+                    Job Description <span class="required">*</span>
+                </label>
+
+                <textarea
+                    name="description"
+                    placeholder="Provide detailed information about the job, responsibilities, qualifications and experience requirements..."
+                    required
+                ></textarea>
+
+                <div class="help">
+                    Provide detailed information so the AI screening system can compare candidate resumes.
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>
+                    Required Skills <span class="required">*</span>
+                </label>
+
+                <input
+                    type="text"
+                    name="required_skills"
+                    placeholder="Python, Flask, SQL, HTML, CSS, JavaScript"
+                    required
+                >
+
+                <div class="help">
+                    Separate every skill using a comma.
+                </div>
+            </div>
+
+            <button type="submit" class="submit-btn">
+                🚀 Create Job & Generate Link
+            </button>
+
+        </form>
+
+        <div class="info-box">
+            🤖 <strong>AI Screening:</strong>
+            After candidates submit their resumes, ResumeRank will extract
+            resume text, identify relevant skills and compare them with the
+            requirements of this job.
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>

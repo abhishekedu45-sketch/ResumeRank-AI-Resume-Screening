@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Candidate Registration | ResumeRank</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: "Segoe UI", Arial, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            padding: 30px 15px;
+            background:
+                radial-gradient(circle at top left, #4f46e5, transparent 35%),
+                radial-gradient(circle at bottom right, #9333ea, transparent 35%),
+                #0f172a;
+            color: white;
+        }
+
+        .container {
+            max-width: 760px;
+            margin: auto;
+        }
+
+        .brand {
+            text-align: center;
+            font-size: 24px;
+            font-weight: 800;
+            margin-bottom: 25px;
+        }
+
+        .card {
+            background: rgba(255,255,255,0.10);
+            border: 1px solid rgba(255,255,255,0.16);
+            backdrop-filter: blur(20px);
+            border-radius: 25px;
+            padding: 38px;
+            box-shadow: 0 25px 70px rgba(0,0,0,0.35);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 7px 14px;
+            border-radius: 30px;
+            background: rgba(99,102,241,0.25);
+            color: #c7d2fe;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+        }
+
+        h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #cbd5e1;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+
+        .job-box {
+            background: rgba(15,23,42,0.55);
+            border: 1px solid rgba(255,255,255,0.10);
+            padding: 20px;
+            border-radius: 16px;
+            margin-bottom: 28px;
+        }
+
+        .job-box h2 {
+            font-size: 20px;
+            margin-bottom: 8px;
+        }
+
+        .job-box p {
+            color: #cbd5e1;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .form-group {
+            margin-bottom: 21px;
+        }
+
+        label {
+            display: block;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .required {
+            color: #f87171;
+        }
+
+        input,
+        textarea {
+            width: 100%;
+            padding: 14px 16px;
+            border-radius: 13px;
+            border: 1px solid rgba(255,255,255,0.15);
+            background: rgba(15,23,42,0.75);
+            color: white;
+            outline: none;
+            font-size: 15px;
+        }
+
+        input:focus,
+        textarea:focus {
+            border-color: #818cf8;
+            box-shadow: 0 0 0 4px rgba(99,102,241,0.15);
+        }
+
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        input[type="file"] {
+            padding: 12px;
+            cursor: pointer;
+        }
+
+        .help {
+            color: #94a3b8;
+            font-size: 12px;
+            margin-top: 7px;
+        }
+
+        .submit-btn {
+            width: 100%;
+            border: none;
+            padding: 17px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, #6366f1, #9333ea);
+            color: white;
+            font-size: 16px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: 0.3s;
+            box-shadow: 0 12px 30px rgba(99,102,241,0.3);
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 17px 35px rgba(99,102,241,0.45);
+        }
+
+        .security {
+            margin-top: 22px;
+            text-align: center;
+            color: #94a3b8;
+            font-size: 13px;
+        }
+
+        .flash {
+            padding: 13px 16px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            background: rgba(239,68,68,0.15);
+            border: 1px solid rgba(239,68,68,0.3);
+            color: #fecaca;
+        }
+
+        @media (max-width: 600px) {
+            .card {
+                padding: 25px;
+            }
+
+            h1 {
+                font-size: 27px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="brand">
+        🤖 ResumeRank
+    </div>
+
+    <div class="card">
+
+        <div class="badge">
+            AI-POWERED RECRUITMENT
+        </div>
+
+        <h1>Candidate Registration</h1>
+
+        <p class="subtitle">
+            Submit your details and resume. Our AI system will analyze your
+            resume against the job requirements.
+        </p>
+
+        <div class="job-box">
+            <h2>{{ job.title }}</h2>
+
+            <p>
+                {{ job.description }}
+            </p>
+        </div>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <form
+            method="POST"
+            action="{{ url_for('candidate_register', unique_link=job.unique_link) }}"
+            enctype="multipart/form-data"
+        >
+
+            <div class="form-group">
+                <label>
+                    Full Name <span class="required">*</span>
+                </label>
+
+                <input
+                    type="text"
+                    name="name"
+                    placeholder="Enter your full name"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label>
+                    Address <span class="required">*</span>
+                </label>
+
+                <textarea
+                    name="address"
+                    placeholder="Enter your address"
+                    required
+                ></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>
+                    Phone Number <span class="required">*</span>
+                </label>
+
+                <input
+                    type="tel"
+                    name="phone"
+                    placeholder="Enter your phone number"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label>
+                    Email Address <span class="required">*</span>
+                </label>
+
+                <input
+                    type="email"
+                    name="email"
+                    placeholder="Enter your email address"
+                    required
+                >
+
+                <div class="help">
+                    Your resume email will be used for selection communication
+                    when available.
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>
+                    Upload Resume <span class="required">*</span>
+                </label>
+
+                <input
+                    type="file"
+                    name="resume"
+                    accept=".pdf,application/pdf"
+                    required
+                >
+
+                <div class="help">
+                    Upload your resume in PDF format only. Maximum size: 16 MB.
+                </div>
+            </div>
+
+            <button type="submit" class="submit-btn">
+                🚀 Submit Application
+            </button>
+
+        </form>
+
+        <div class="security">
+            🔒 Your information is securely submitted for recruitment screening.
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>

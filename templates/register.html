@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Candidate Registration</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            min-height: 100vh;
+            background:
+                radial-gradient(
+                    circle at top left,
+                    #312e81 0%,
+                    #111827 45%,
+                    #020617 100%
+                );
+            color: #ffffff;
+            padding: 40px 20px;
+        }
+
+        .page {
+            width: 100%;
+            max-width: 850px;
+            margin: auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo {
+            width: 70px;
+            height: 70px;
+            margin: 0 auto 18px;
+            border-radius: 20px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background: linear-gradient(
+                135deg,
+                #6366f1,
+                #8b5cf6
+            );
+
+            font-size: 32px;
+
+            box-shadow:
+                0 15px 40px rgba(
+                    99,
+                    102,
+                    241,
+                    0.35
+                );
+        }
+
+        .header h1 {
+            font-size: 30px;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #cbd5e1;
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        .card {
+            background: rgba(
+                15,
+                23,
+                42,
+                0.88
+            );
+
+            border: 1px solid rgba(
+                255,
+                255,
+                255,
+                0.10
+            );
+
+            border-radius: 24px;
+
+            padding: 35px;
+
+            box-shadow:
+                0 25px 70px rgba(
+                    0,
+                    0,
+                    0,
+                    0.35
+                );
+
+            backdrop-filter: blur(18px);
+        }
+
+        .section-title {
+            font-size: 20px;
+            margin-bottom: 25px;
+        }
+
+        .form-group {
+            margin-bottom: 22px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 9px;
+
+            font-size: 14px;
+            font-weight: 600;
+
+            color: #e2e8f0;
+        }
+
+        .required {
+            color: #f87171;
+        }
+
+        input,
+        textarea {
+            width: 100%;
+
+            padding: 14px 16px;
+
+            border-radius: 12px;
+
+            border: 1px solid #334155;
+
+            background: #0f172a;
+
+            color: #ffffff;
+
+            font-size: 15px;
+
+            outline: none;
+
+            transition: 0.2s;
+        }
+
+        input:focus,
+        textarea:focus {
+            border-color: #818cf8;
+
+            box-shadow:
+                0 0 0 3px rgba(
+                    99,
+                    102,
+                    241,
+                    0.15
+                );
+        }
+
+        textarea {
+            min-height: 110px;
+            resize: vertical;
+        }
+
+        input[type="file"] {
+            padding: 12px;
+
+            cursor: pointer;
+
+            background: #111827;
+        }
+
+        .help-text {
+            margin-top: 8px;
+
+            color: #94a3b8;
+
+            font-size: 13px;
+
+            line-height: 1.5;
+        }
+
+        .submit-button {
+            width: 100%;
+
+            border: none;
+
+            border-radius: 13px;
+
+            padding: 15px;
+
+            background: linear-gradient(
+                135deg,
+                #6366f1,
+                #8b5cf6
+            );
+
+            color: white;
+
+            font-size: 16px;
+
+            font-weight: 700;
+
+            cursor: pointer;
+
+            transition: 0.25s;
+
+            margin-top: 8px;
+        }
+
+        .submit-button:hover {
+            transform: translateY(-2px);
+
+            box-shadow:
+                0 12px 30px rgba(
+                    99,
+                    102,
+                    241,
+                    0.35
+                );
+        }
+
+        .security {
+            text-align: center;
+
+            margin-top: 22px;
+
+            color: #94a3b8;
+
+            font-size: 12px;
+        }
+
+        .flash-container {
+            margin-bottom: 20px;
+        }
+
+        .flash {
+            padding: 13px 16px;
+
+            border-radius: 12px;
+
+            font-size: 14px;
+
+            background: rgba(
+                239,
+                68,
+                68,
+                0.12
+            );
+
+            border: 1px solid rgba(
+                239,
+                68,
+                68,
+                0.25
+            );
+
+            color: #fecaca;
+        }
+
+        @media (max-width: 600px) {
+
+            body {
+                padding: 25px 15px;
+            }
+
+            .card {
+                padding: 25px 20px;
+            }
+
+            .header h1 {
+                font-size: 25px;
+            }
+
+        }
+
+    </style>
+</head>
+
+<body>
+
+<div class="page">
+
+    <!-- HEADER -->
+
+    <div class="header">
+
+        <div class="logo">
+            🤖
+        </div>
+
+        <h1>
+            Register Your Profile
+        </h1>
+
+        <p>
+            Please provide your details and upload your latest resume.
+            Our AI system will securely analyze your resume.
+        </p>
+
+    </div>
+
+
+    <!-- REGISTRATION CARD -->
+
+    <div class="card">
+
+        <h2 class="section-title">
+            Candidate Registration
+        </h2>
+
+
+        <!--
+            IMPORTANT:
+            We intentionally do NOT display
+            flashed success messages here.
+
+            This prevents messages such as
+            "Job created successfully!"
+            from appearing on the candidate page.
+        -->
+
+
+        <form
+            method="POST"
+            action="{{ url_for('candidate_register', unique_link=job.unique_link) }}"
+            enctype="multipart/form-data"
+        >
+
+            <!-- FULL NAME -->
+
+            <div class="form-group">
+
+                <label for="name">
+                    Full Name
+                    <span class="required">*</span>
+                </label>
+
+                <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    placeholder="Enter your full name"
+                    required
+                >
+
+            </div>
+
+
+            <!-- ADDRESS -->
+
+            <div class="form-group">
+
+                <label for="address">
+                    Address
+                    <span class="required">*</span>
+                </label>
+
+                <textarea
+                    id="address"
+                    name="address"
+                    placeholder="Enter your complete address"
+                    required
+                ></textarea>
+
+            </div>
+
+
+            <!-- PHONE -->
+
+            <div class="form-group">
+
+                <label for="phone">
+                    Phone Number
+                    <span class="required">*</span>
+                </label>
+
+                <input
+                    type="tel"
+                    id="phone"
+                    name="phone"
+                    placeholder="Enter your phone number"
+                    required
+                >
+
+            </div>
+
+
+            <!-- EMAIL -->
+
+            <div class="form-group">
+
+                <label for="email">
+                    Email Address
+                    <span class="required">*</span>
+                </label>
+
+                <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    placeholder="Enter your active email address"
+                    required
+                >
+
+                <div class="help-text">
+                    Please enter an active email address.
+                </div>
+
+            </div>
+
+
+            <!-- RESUME -->
+
+            <div class="form-group">
+
+                <label for="resume">
+                    Upload Resume
+                    <span class="required">*</span>
+                </label>
+
+                <input
+                    type="file"
+                    id="resume"
+                    name="resume"
+                    accept=".pdf,application/pdf"
+                    required
+                >
+
+                <div class="help-text">
+                    Upload your latest resume in PDF format.
+                    Maximum size: 16 MB.
+                </div>
+
+            </div>
+
+
+            <!-- SUBMIT -->
+
+            <button
+                type="submit"
+                class="submit-button"
+            >
+                🚀 Submit Registration
+            </button>
+
+        </form>
+
+
+        <div class="security">
+            🔒 Your information is securely processed by the AI Resume Screening System.
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>

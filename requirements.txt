@@ -1,0 +1,5 @@
+Flask
+PyPDF2
+scikit-learn
+Flask-Mail
+python-dotenv

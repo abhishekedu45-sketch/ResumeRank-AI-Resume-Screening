@@ -1,0 +1,43 @@
+@app.route("/dashboard")
+def dashboard():
+
+    if not admin_required():
+        return redirect(
+            url_for("admin_login")
+        )
+
+    jobs = get_all_jobs()
+
+    jobs_with_counts = []
+
+    total_candidates = 0
+    high_matches = 0
+
+    for job in jobs:
+
+        candidate_count = get_candidate_count(
+            job["id"]
+        )
+
+        high_match_count = get_high_match_count(
+            job["id"]
+        )
+
+        total_candidates += candidate_count
+        high_matches += high_match_count
+
+        job_data = dict(job)
+
+        job_data["candidate_count"] = candidate_count
+
+        jobs_with_counts.append(job_data)
+
+    total_jobs = len(jobs_with_counts)
+
+    return render_template(
+        "admin.html",
+        jobs=jobs_with_counts,
+        total_jobs=total_jobs,
+        total_candidates=total_candidates,
+        high_matches=high_matches
+    )

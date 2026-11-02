@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>Application Submitted | ResumeRank</title>
+
+<style>
+
+body {
+
+    margin: 0;
+
+    min-height: 100vh;
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    font-family: Arial, sans-serif;
+
+    background:
+        linear-gradient(
+            135deg,
+            #eef2ff,
+            #fce7f3,
+            #cffafe
+        );
+}
+
+
+.card {
+
+    width: 90%;
+
+    max-width: 650px;
+
+    text-align: center;
+
+    padding: 45px;
+
+    border-radius: 30px;
+
+    background: white;
+
+    box-shadow:
+        0 25px 60px
+        rgba(0,0,0,0.12);
+}
+
+
+.icon {
+
+    font-size: 70px;
+}
+
+
+h1 {
+
+    background:
+        linear-gradient(
+            90deg,
+            #2563eb,
+            #7c3aed,
+            #ec4899
+        );
+
+    -webkit-background-clip: text;
+
+    -webkit-text-fill-color: transparent;
+}
+
+
+p {
+
+    color: #64748b;
+
+    line-height: 1.6;
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+<div class="card">
+
+    <div class="icon">
+        🎉
+    </div>
+
+    <h1>
+        Application Submitted Successfully!
+    </h1>
+
+    <p>
+
+        Thank you,
+        <strong>{{ candidate_name }}</strong>.
+
+    </p>
+
+    <p>
+
+        Your resume has been successfully submitted
+        for the <strong>{{ job["title"] }}</strong> position.
+
+    </p>
+
+    <p>
+        Your application is now available for the
+        recruitment screening process.
+
+    </p>
+
+</div>
+
+</body>
+
+</html>
