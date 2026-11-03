@@ -2,20 +2,12 @@
 <html lang="en">
 
 <head>
-
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
-
-    <title>
-        Admin Dashboard | AI Resume Screening
-    </title>
+    <title>Admin Dashboard | AI Resume Screening</title>
 
     <style>
-
         * {
             margin: 0;
             padding: 0;
@@ -23,713 +15,372 @@
         }
 
         body {
-
-            font-family:
-                Arial,
-                Helvetica,
-                sans-serif;
-
+            font-family: Arial, Helvetica, sans-serif;
             min-height: 100vh;
-
             color: #ffffff;
-
             background:
-                radial-gradient(
-                    circle at 10% 10%,
-                    rgba(99, 102, 241, 0.35),
-                    transparent 30%
-                ),
-
-                radial-gradient(
-                    circle at 90% 90%,
-                    rgba(168, 85, 247, 0.30),
-                    transparent 30%
-                ),
-
+                radial-gradient(circle at 10% 10%, rgba(99, 102, 241, 0.35), transparent 30%),
+                radial-gradient(circle at 90% 90%, rgba(168, 85, 247, 0.30), transparent 30%),
                 #080b18;
         }
 
-
-        /* =========================
-           NAVBAR
-        ========================= */
+        /* NAVBAR */
 
         .navbar {
-
             height: 76px;
-
             display: flex;
-
             align-items: center;
-
             justify-content: space-between;
-
             padding: 0 45px;
-
-            background:
-                rgba(10, 14, 30, 0.88);
-
-            border-bottom:
-                1px solid rgba(255,255,255,0.08);
-
+            background: rgba(10, 14, 30, 0.88);
+            border-bottom: 1px solid rgba(255,255,255,0.08);
             backdrop-filter: blur(18px);
-
             position: sticky;
-
             top: 0;
-
             z-index: 100;
         }
 
-
         .logo {
-
             font-size: 21px;
-
             font-weight: 800;
-
             letter-spacing: 0.3px;
         }
 
-
         .logo span {
-
             color: #a78bfa;
         }
 
-
         .nav-right {
-
             display: flex;
-
             align-items: center;
-
             gap: 18px;
         }
 
-
         .admin-label {
-
             color: #cbd5e1;
-
             font-size: 14px;
         }
 
-
         .logout-btn {
-
             text-decoration: none;
-
             color: white;
-
-            background:
-                linear-gradient(
-                    135deg,
-                    #dc2626,
-                    #b91c1c
-                );
-
-            padding:
-                10px 18px;
-
+            background: linear-gradient(135deg, #dc2626, #b91c1c);
+            padding: 10px 18px;
             border-radius: 10px;
-
             font-size: 14px;
-
             font-weight: 700;
-
             transition: 0.2s;
         }
 
-
         .logout-btn:hover {
-
             transform: translateY(-2px);
-
-            box-shadow:
-                0 8px 20px
-                rgba(220,38,38,0.25);
+            box-shadow: 0 8px 20px rgba(220,38,38,0.25);
         }
 
-
-        /* =========================
-           MAIN CONTAINER
-        ========================= */
+        /* MAIN CONTAINER */
 
         .container {
-
             width: 92%;
-
             max-width: 1250px;
-
-            margin:
-                42px auto
-                70px;
+            margin: 42px auto 70px;
         }
 
-
-        /* =========================
-           FLASH MESSAGE
-        ========================= */
+        /* FLASH MESSAGE */
 
         .flash {
-
             padding: 15px 18px;
-
             border-radius: 12px;
-
             margin-bottom: 22px;
-
-            background:
-                rgba(34,197,94,0.12);
-
-            border:
-                1px solid
-                rgba(34,197,94,0.28);
-
+            background: rgba(34,197,94,0.12);
+            border: 1px solid rgba(34,197,94,0.28);
             color: #86efac;
-
             font-size: 14px;
         }
 
-
-        /* =========================
-           HERO
-        ========================= */
+        /* HERO */
 
         .hero {
-
             display: flex;
-
             justify-content: space-between;
-
             align-items: center;
-
             gap: 30px;
-
             margin-bottom: 35px;
         }
 
-
         .hero-content h1 {
-
             font-size: 40px;
-
             line-height: 1.1;
-
             margin-bottom: 12px;
         }
 
-
         .hero-content h1 span {
-
             color: #a78bfa;
         }
 
-
         .hero-content p {
-
             color: #94a3b8;
-
             max-width: 650px;
-
             line-height: 1.7;
-
             font-size: 15px;
         }
 
-
         .create-btn {
-
             text-decoration: none;
-
             display: inline-flex;
-
             align-items: center;
-
             justify-content: center;
-
             gap: 8px;
-
-            background:
-                linear-gradient(
-                    135deg,
-                    #7c3aed,
-                    #4f46e5
-                );
-
+            background: linear-gradient(135deg, #7c3aed, #4f46e5);
             color: white;
-
-            padding:
-                14px 22px;
-
+            padding: 14px 22px;
             border-radius: 12px;
-
             font-weight: 700;
-
             white-space: nowrap;
-
-            box-shadow:
-                0 12px 30px
-                rgba(79,70,229,0.28);
-
+            box-shadow: 0 12px 30px rgba(79,70,229,0.28);
             transition: 0.25s;
         }
 
-
         .create-btn:hover {
-
             transform: translateY(-2px);
-
-            box-shadow:
-                0 16px 35px
-                rgba(79,70,229,0.38);
+            box-shadow: 0 16px 35px rgba(79,70,229,0.38);
         }
 
-
-        /* =========================
-           STAT CARDS
-        ========================= */
+        /* STAT CARDS */
 
         .stats {
-
             display: grid;
-
-            grid-template-columns:
-                repeat(3, 1fr);
-
+            grid-template-columns: repeat(3, 1fr);
             gap: 20px;
-
             margin-bottom: 35px;
         }
 
-
         .stat-card {
-
             position: relative;
-
             overflow: hidden;
-
             padding: 25px;
-
             min-height: 135px;
-
             border-radius: 18px;
-
-            background:
-                rgba(255,255,255,0.055);
-
-            border:
-                1px solid
-                rgba(255,255,255,0.09);
-
+            background: rgba(255,255,255,0.055);
+            border: 1px solid rgba(255,255,255,0.09);
             backdrop-filter: blur(18px);
-
-            box-shadow:
-                0 15px 35px
-                rgba(0,0,0,0.18);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.18);
         }
-
 
         .stat-card::after {
-
             content: "";
-
             position: absolute;
-
             width: 100px;
-
             height: 100px;
-
             border-radius: 50%;
-
             right: -35px;
-
             top: -35px;
-
-            background:
-                rgba(139,92,246,0.12);
+            background: rgba(139,92,246,0.12);
         }
 
-
         .stat-title {
-
             color: #94a3b8;
-
             font-size: 12px;
-
             font-weight: 700;
-
             letter-spacing: 1px;
-
             margin-bottom: 15px;
         }
 
-
         .stat-number {
-
             font-size: 36px;
-
             font-weight: 800;
-
             color: #ffffff;
         }
 
-
-        /* =========================
-           JOB SECTION
-        ========================= */
+        /* JOB SECTION */
 
         .jobs-card {
-
-            background:
-                rgba(255,255,255,0.055);
-
-            border:
-                1px solid
-                rgba(255,255,255,0.09);
-
+            background: rgba(255,255,255,0.055);
+            border: 1px solid rgba(255,255,255,0.09);
             border-radius: 20px;
-
             padding: 25px;
-
             backdrop-filter: blur(18px);
-
-            box-shadow:
-                0 20px 45px
-                rgba(0,0,0,0.18);
+            box-shadow: 0 20px 45px rgba(0,0,0,0.18);
         }
 
-
         .jobs-header {
-
             display: flex;
-
             align-items: center;
-
             justify-content: space-between;
-
             margin-bottom: 22px;
         }
 
-
         .jobs-header h2 {
-
             font-size: 22px;
         }
 
-
         .jobs-header p {
-
             color: #94a3b8;
-
             font-size: 13px;
         }
 
-
-        /* =========================
-           TABLE
-        ========================= */
+        /* TABLE */
 
         .table-wrapper {
-
             overflow-x: auto;
         }
 
-
         table {
-
             width: 100%;
-
             border-collapse: collapse;
-
             min-width: 780px;
         }
 
-
         th {
-
             text-align: left;
-
-            padding:
-                15px;
-
+            padding: 15px;
             color: #a78bfa;
-
             font-size: 12px;
-
             text-transform: uppercase;
-
             letter-spacing: 0.7px;
-
-            border-bottom:
-                1px solid
-                rgba(255,255,255,0.10);
+            border-bottom: 1px solid rgba(255,255,255,0.10);
         }
 
-
         td {
-
-            padding:
-                17px 15px;
-
-            border-bottom:
-                1px solid
-                rgba(255,255,255,0.065);
-
+            padding: 17px 15px;
+            border-bottom: 1px solid rgba(255,255,255,0.065);
             color: #dbe4f0;
-
             font-size: 14px;
-
             vertical-align: middle;
         }
 
-
         tr:hover td {
-
-            background:
-                rgba(255,255,255,0.025);
+            background: rgba(255,255,255,0.025);
         }
 
-
         .job-title {
-
             color: white;
-
             font-weight: 700;
-
             margin-bottom: 5px;
         }
 
-
         .job-id {
-
             color: #64748b;
-
             font-size: 11px;
         }
 
-
         .skills {
-
             color: #94a3b8;
-
             line-height: 1.5;
-
             max-width: 300px;
         }
 
-
         .candidate-count {
-
             display: inline-flex;
-
             align-items: center;
-
             justify-content: center;
-
             min-width: 40px;
-
-            padding:
-                7px 11px;
-
+            padding: 7px 11px;
             border-radius: 9px;
-
-            background:
-                rgba(99,102,241,0.14);
-
-            border:
-                1px solid
-                rgba(99,102,241,0.22);
-
+            background: rgba(99,102,241,0.14);
+            border: 1px solid rgba(99,102,241,0.22);
             color: #c4b5fd;
-
             font-weight: 700;
         }
 
-
-        /* =========================
-           ACTION BUTTONS
-        ========================= */
+        /* ACTION BUTTONS */
 
         .actions {
-
             display: flex;
-
             align-items: center;
-
             gap: 8px;
-
             flex-wrap: wrap;
         }
 
-
         .view-btn {
-
             display: inline-flex;
-
             align-items: center;
-
             justify-content: center;
-
             text-decoration: none;
-
             color: white;
-
-            background:
-                linear-gradient(
-                    135deg,
-                    #4f46e5,
-                    #6366f1
-                );
-
-            padding:
-                9px 13px;
-
+            background: linear-gradient(135deg, #4f46e5, #6366f1);
+            padding: 9px 13px;
             border-radius: 9px;
-
             font-size: 12px;
-
             font-weight: 700;
-
             transition: 0.2s;
         }
-
 
         .view-btn:hover {
-
             transform: translateY(-1px);
         }
 
-
         .delete-btn {
-
             border: none;
-
             color: white;
-
-            background:
-                linear-gradient(
-                    135deg,
-                    #dc2626,
-                    #b91c1c
-                );
-
-            padding:
-                9px 13px;
-
+            background: linear-gradient(135deg, #dc2626, #b91c1c);
+            padding: 9px 13px;
             border-radius: 9px;
-
             font-size: 12px;
-
             font-weight: 700;
-
             cursor: pointer;
-
             transition: 0.2s;
         }
 
-
         .delete-btn:hover {
-
             transform: translateY(-1px);
-
-            box-shadow:
-                0 7px 15px
-                rgba(220,38,38,0.22);
+            box-shadow: 0 7px 15px rgba(220,38,38,0.22);
         }
 
-
-        /* =========================
-           EMPTY STATE
-        ========================= */
+        /* EMPTY STATE */
 
         .empty {
-
             text-align: center;
-
-            padding:
-                65px 20px;
-
+            padding: 65px 20px;
             color: #94a3b8;
         }
 
-
         .empty-icon {
-
             font-size: 45px;
-
             margin-bottom: 15px;
         }
 
-
         .empty h3 {
-
             color: white;
-
             margin-bottom: 8px;
-
             font-size: 20px;
         }
 
-
         .empty p {
-
             font-size: 14px;
-
             line-height: 1.6;
         }
 
-
-        /* =========================
-           RESPONSIVE
-        ========================= */
+        /* RESPONSIVE */
 
         @media (max-width: 850px) {
 
             .navbar {
-
-                padding:
-                    0 20px;
+                padding: 0 20px;
             }
 
-
             .admin-label {
-
                 display: none;
             }
 
-
             .container {
-
                 width: 94%;
-
                 margin-top: 30px;
             }
 
-
             .hero {
-
                 flex-direction: column;
-
                 align-items: flex-start;
             }
 
-
             .hero-content h1 {
-
                 font-size: 32px;
             }
 
-
             .stats {
-
                 grid-template-columns: 1fr;
             }
 
-
             .jobs-card {
-
                 padding: 18px;
             }
         }
@@ -738,23 +389,16 @@
 
 </head>
 
-
 <body>
 
-
-    <!-- =========================
-         NAVBAR
-    ========================= -->
+    <!-- NAVBAR -->
 
     <nav class="navbar">
 
         <div class="logo">
-
             🤖 AI
             <span>Resume Screening</span>
-
         </div>
-
 
         <div class="nav-right">
 
@@ -762,11 +406,7 @@
                 Admin Dashboard
             </span>
 
-
-            <a
-                href="{{ url_for('logout') }}"
-                class="logout-btn"
-            >
+            <a href="{{ url_for('logout') }}" class="logout-btn">
                 Logout
             </a>
 
@@ -774,14 +414,9 @@
 
     </nav>
 
-
-
-    <!-- =========================
-         MAIN
-    ========================= -->
+    <!-- MAIN -->
 
     <main class="container">
-
 
         <!-- FLASH MESSAGES -->
 
@@ -792,9 +427,7 @@
                 {% for category, message in messages %}
 
                     <div class="flash">
-
                         {{ message }}
-
                     </div>
 
                 {% endfor %}
@@ -803,12 +436,9 @@
 
         {% endwith %}
 
-
-
         <!-- HERO -->
 
         <section class="hero">
-
 
             <div class="hero-content">
 
@@ -817,294 +447,149 @@
                     <span>Dashboard</span>
                 </h1>
 
-
                 <p>
-
                     Manage your job openings, review applicants,
                     and analyze AI-powered resume matching
                     results from one professional dashboard.
-
                 </p>
 
             </div>
 
-
-            <a
-                href="{{ url_for('create_job_page') }}"
-                class="create-btn"
-            >
-
-                🚀 Create New Job
-
+            <a href="{{ url_for('create_job_route') }}" class="create-btn">
+                + Create New Job
             </a>
-
 
         </section>
 
-
-
-        <!-- =========================
-             STATISTICS
-        ========================= -->
+        <!-- STAT CARDS -->
 
         <section class="stats">
 
-
             <div class="stat-card">
-
-                <div class="stat-title">
-                    TOTAL JOBS
-                </div>
-
-                <div class="stat-number">
-                    {{ total_jobs }}
-                </div>
-
+                <div class="stat-title">TOTAL JOBS</div>
+                <div class="stat-number">{{ total_jobs|default(0) }}</div>
             </div>
 
-
             <div class="stat-card">
-
-                <div class="stat-title">
-                    TOTAL CANDIDATES
-                </div>
-
-                <div class="stat-number">
-                    {{ total_candidates }}
-                </div>
-
+                <div class="stat-title">TOTAL CANDIDATES</div>
+                <div class="stat-number">{{ total_candidates|default(0) }}</div>
             </div>
 
-
             <div class="stat-card">
-
-                <div class="stat-title">
-                    HIGH MATCHES 70%+
-                </div>
-
-                <div class="stat-number">
-                    {{ high_matches }}
-                </div>
-
+                <div class="stat-title">HIGH MATCHES (70%+)</div>
+                <div class="stat-number">{{ high_matches|default(0) }}</div>
             </div>
-
 
         </section>
 
-
-
-        <!-- =========================
-             JOB OPENINGS
-        ========================= -->
+        <!-- JOBS SECTION -->
 
         <section class="jobs-card">
 
-
             <div class="jobs-header">
-
                 <div>
-
-                    <h2>
-                        Job Openings
-                    </h2>
-
-                    <p>
-                        Manage your active recruitment positions
-                    </p>
-
+                    <h2>Job Openings</h2>
+                    <p>Manage your recruitment and view candidate rankings.</p>
                 </div>
-
             </div>
-
-
 
             {% if jobs %}
 
-
                 <div class="table-wrapper">
-
 
                     <table>
 
-
                         <thead>
-
                             <tr>
-
-                                <th>
-                                    Job
-                                </th>
-
-                                <th>
-                                    Required Skills
-                                </th>
-
-                                <th>
-                                    Candidates
-                                </th>
-
-                                <th>
-                                    Actions
-                                </th>
-
+                                <th>Job Title</th>
+                                <th>Required Skills</th>
+                                <th>Candidates</th>
+                                <th>Actions</th>
                             </tr>
-
                         </thead>
-
-
 
                         <tbody>
 
-
                             {% for job in jobs %}
-
 
                                 <tr>
 
-
-                                    <!-- JOB -->
-
                                     <td>
-
                                         <div class="job-title">
-
-                                            {{ job.title }}
-
+                                            {{ job['title'] }}
                                         </div>
-
 
                                         <div class="job-id">
-
-                                            Job ID #{{ job.id }}
-
+                                            Job ID: {{ job['id'] }}
                                         </div>
-
                                     </td>
 
-
-
-                                    <!-- SKILLS -->
-
                                     <td>
-
                                         <div class="skills">
-
-                                            {{ job.required_skills }}
-
+                                            {{ job['required_skills'] }}
                                         </div>
-
                                     </td>
-
-
-
-                                    <!-- CANDIDATE COUNT -->
 
                                     <td>
-
                                         <span class="candidate-count">
-
-                                            {{ job.candidate_count }}
-
+                                            {{ job['candidate_count']|default(0) }}
                                         </span>
-
                                     </td>
-
-
-
-                                    <!-- ACTIONS -->
 
                                     <td>
 
                                         <div class="actions">
 
-
-                                            <a
-                                                href="{{ url_for('job_results', job_id=job.id) }}"
-                                                class="view-btn"
-                                            >
-
-                                                📊 View Results
-
+                                            <a href="{{ url_for('results', job_id=job['id']) }}"
+                                               class="view-btn">
+                                                View Results
                                             </a>
 
+                                            <form method="POST"
+                                                  action="{{ url_for('delete_job', job_id=job['id']) }}"
+                                                  onsubmit="return confirm('Are you sure you want to delete this job and its candidates?');">
 
-
-                                            <form
-                                                method="POST"
-                                                action="{{ url_for('delete_job_route', job_id=job.id) }}"
-                                                style="display:inline;"
-                                                onsubmit="return confirm('Are you sure you want to delete this job and all its candidates?');"
-                                            >
-
-                                                <button
-                                                    type="submit"
-                                                    class="delete-btn"
-                                                >
-
-                                                    🗑 Delete
-
+                                                <button type="submit" class="delete-btn">
+                                                    Delete
                                                 </button>
 
                                             </form>
-
 
                                         </div>
 
                                     </td>
 
-
                                 </tr>
-
 
                             {% endfor %}
 
-
                         </tbody>
-
 
                     </table>
 
-
                 </div>
-
 
             {% else %}
 
-
                 <div class="empty">
 
+                    <div class="empty-icon">📂</div>
 
-                    <div class="empty-icon">
-                        📋
-                    </div>
-
-
-                    <h3>
-                        No Job Openings Yet
-                    </h3>
-
+                    <h3>No Job Openings Yet</h3>
 
                     <p>
-
-                        Create your first job opening
-                        to start collecting and screening
-                        candidate resumes.
-
+                        You haven't created any job openings.
+                        Click the Create New Job button to get started
+                        with AI-powered resume screening.
                     </p>
-
 
                 </div>
 
-
             {% endif %}
-
 
         </section>
 
-
     </main>
 
-
 </body>
-
 </html>

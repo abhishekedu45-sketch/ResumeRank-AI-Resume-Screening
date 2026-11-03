@@ -618,11 +618,10 @@
 
         💡 Candidates with a
         <strong>70% or higher</strong>
-        skill match are eligible for the
-        selection email.
+        match score are eligible for the interview email.
 
-        The email is sent to the
-        <strong>email address extracted from the candidate's resume.</strong>
+        The email will be sent to the
+        <strong>email address provided by the candidate during registration.</strong>
 
     </div>
 
@@ -651,7 +650,7 @@
             </div>
 
             <div class="stat-value">
-                {{ candidates_above_70 }}
+                {{ high_matches }}
             </div>
 
         </div>
@@ -773,7 +772,7 @@
                             <div
                                 class="
                                     score
-                                    {% if candidate.score >= 70 %}
+                                    {% if candidate.match_score >= 70 %}
                                         high-score
                                     {% else %}
                                         normal-score
@@ -782,7 +781,7 @@
                             >
 
                                 {{ "%.2f"|format(
-                                    candidate.score
+                                    candidate.match_score
                                 ) }}%
 
                             </div>
@@ -796,14 +795,18 @@
                             <div class="skill-list">
 
 
-                                {% for skill in
-                                    candidate.matched_skills_list
-                                %}
+                                {% for skill in candidate.matched_skills %}
 
                                     <span class="skill">
 
                                         {{ skill }}
 
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="not-eligible">
+                                        No matching skills found
                                     </span>
 
                                 {% endfor %}
@@ -818,18 +821,19 @@
                         <td>
 
 
-                            {% if candidate.score >= 70 %}
+                            {% if candidate.match_score >= 70 %}
 
 
                                 <form
                                     method="POST"
                                     action="{{
                                         url_for(
-                                            'send_selection_email',
-                                            candidate_id=candidate.id
+                                            'send_interview_email',
+                                            candidate_id=candidate.id,
+                                            job_id=job.id
                                         )
                                     }}"
-                                    onsubmit="return confirm('Send selection email to {{ candidate.email }}?');"
+                                    onsubmit="return confirm('Send interview email to {{ candidate.email }}?');"
                                 >
 
                                     <button

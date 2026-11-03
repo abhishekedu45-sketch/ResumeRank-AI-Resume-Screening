@@ -1,11 +1,8 @@
 @app.route("/dashboard")
+@admin_required
 def dashboard():
 
-    if not admin_required():
-        return redirect(
-            url_for("admin_login")
-        )
-
+    # Get all jobs from database
     jobs = get_all_jobs()
 
     jobs_with_counts = []
@@ -13,27 +10,28 @@ def dashboard():
     total_candidates = 0
     high_matches = 0
 
+    # Calculate candidate statistics for every job
     for job in jobs:
 
-        candidate_count = get_candidate_count(
-            job["id"]
-        )
+        candidate_count = get_candidate_count(job["id"])
 
-        high_match_count = get_high_match_count(
-            job["id"]
-        )
+        high_match_count = get_high_match_count(job["id"])
 
         total_candidates += candidate_count
         high_matches += high_match_count
 
+        # Convert database row into dictionary
         job_data = dict(job)
 
+        # Add candidate count to job details
         job_data["candidate_count"] = candidate_count
 
         jobs_with_counts.append(job_data)
 
+    # Calculate total jobs
     total_jobs = len(jobs_with_counts)
 
+    # Display dashboard
     return render_template(
         "admin.html",
         jobs=jobs_with_counts,
