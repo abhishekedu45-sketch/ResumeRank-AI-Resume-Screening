@@ -1,9 +1,13 @@
-import urllib.error
-import urllib.request
-import json
+
 import os
 import uuid
 import sqlite3
+import smtplib
+
+from email.message import EmailMessage
+from dotenv import load_dotenv
+
+load_dotenv()
 from functools import wraps
 
 from flask import (
@@ -47,10 +51,19 @@ app.secret_key = os.environ.get(
     "change-this-secret-key-before-deployment"
 )
 
-BASE_DIR = os.path.abspath(os.path.dirname(__file__))
+BASE_DIR = os.path.abspath(
+    os.path.dirname(__file__)
+)
 
-UPLOAD_FOLDER = os.path.join(BASE_DIR, "uploads")
-DATABASE_FOLDER = os.path.join(BASE_DIR, "database")
+UPLOAD_FOLDER = os.path.join(
+    BASE_DIR,
+    "uploads"
+)
+
+DATABASE_FOLDER = os.path.join(
+    BASE_DIR,
+    "database"
+)
 
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 os.makedirs(DATABASE_FOLDER, exist_ok=True)
@@ -115,7 +128,9 @@ def admin_required(function):
 
         if not session.get("admin_logged_in"):
 
-            return redirect(url_for("admin_login"))
+            return redirect(
+                url_for("admin_login")
+            )
 
         return function(*args, **kwargs)
 
@@ -124,7 +139,9 @@ def admin_required(function):
 
 def get_public_base_url():
 
-    render_url = os.environ.get("RENDER_EXTERNAL_URL")
+    render_url = os.environ.get(
+        "RENDER_EXTERNAL_URL"
+    )
 
     if render_url:
 
@@ -135,11 +152,15 @@ def get_public_base_url():
 
 def get_db_connection():
 
-    connection = sqlite3.connect(DATABASE_PATH)
+    connection = sqlite3.connect(
+        DATABASE_PATH
+    )
 
     connection.row_factory = sqlite3.Row
 
-    connection.execute("PRAGMA foreign_keys = ON")
+    connection.execute(
+        "PRAGMA foreign_keys = ON"
+    )
 
     return connection
 
@@ -195,7 +216,9 @@ def rank_job_candidates(job_id, job):
 
         try:
 
-            resume_text = extract_text_from_pdf(resume_path)
+            resume_text = extract_text_from_pdf(
+                resume_path
+            )
 
             candidate_list.append({
 
@@ -215,11 +238,11 @@ def rank_job_candidates(job_id, job):
 
             })
 
-        except Exception as error:
+        except Exception:
 
             app.logger.exception(
-                "Resume extraction failed: %s",
-                error
+                "Resume extraction failed for candidate ID %s",
+                candidate["id"]
             )
 
     if not candidate_list:
@@ -245,11 +268,11 @@ def rank_job_candidates(job_id, job):
                 candidate["matched_skills"]
             )
 
-        except Exception as error:
+        except Exception:
 
             app.logger.exception(
-                "Unable to save ranking result: %s",
-                error
+                "Unable to save ranking result for candidate ID %s",
+                candidate["id"]
             )
 
     return ranked
@@ -276,11 +299,11 @@ def get_dashboard_high_matches(jobs):
                 job["id"]
             )
 
-        except Exception as error:
+        except Exception:
 
             app.logger.exception(
-                "Dashboard ranking failed: %s",
-                error
+                "Dashboard ranking failed for job ID %s",
+                job["id"]
             )
 
     return total_high_matches
@@ -293,30 +316,37 @@ def get_dashboard_high_matches(jobs):
 @app.route("/")
 def home():
 
-    return redirect(url_for("admin_login"))
+    return redirect(
+        url_for("admin_login")
+    )
 
 
 # ==================================================
 # ADMIN LOGIN
 # ==================================================
 
-@app.route("/admin", methods=["GET", "POST"])
+@app.route(
+    "/admin",
+    methods=["GET", "POST"]
+)
 def admin_login():
-
-    # If already logged in, open dashboard
 
     if session.get("admin_logged_in"):
 
-        return redirect(url_for("dashboard"))
+        return redirect(
+            url_for("dashboard")
+        )
 
     if request.method == "POST":
 
         username = request.form.get(
-            "username", ""
+            "username",
+            ""
         ).strip()
 
         password = request.form.get(
-            "password", ""
+            "password",
+            ""
         )
 
         if (
@@ -328,14 +358,18 @@ def admin_login():
 
             session["admin_logged_in"] = True
 
-            return redirect(url_for("dashboard"))
+            return redirect(
+                url_for("dashboard")
+            )
 
         flash(
             "Invalid username or password.",
             "error"
         )
 
-    return render_template("login.html")
+    return render_template(
+        "login.html"
+    )
 
 
 # ==================================================
@@ -376,7 +410,9 @@ def dashboard():
 
         })
 
-    high_matches = get_dashboard_high_matches(jobs)
+    high_matches = get_dashboard_high_matches(
+        jobs
+    )
 
     return render_template(
         "admin.html",
@@ -391,22 +427,28 @@ def dashboard():
 # CREATE JOB
 # ==================================================
 
-@app.route("/create-job", methods=["GET", "POST"])
+@app.route(
+    "/create-job",
+    methods=["GET", "POST"]
+)
 @admin_required
 def create_job_route():
 
     if request.method == "POST":
 
         title = request.form.get(
-            "title", ""
+            "title",
+            ""
         ).strip()
 
         description = request.form.get(
-            "description", ""
+            "description",
+            ""
         ).strip()
 
         required_skills = request.form.get(
-            "required_skills", ""
+            "required_skills",
+            ""
         ).strip()
 
         if not title or not description or not required_skills:
@@ -416,7 +458,9 @@ def create_job_route():
                 "error"
             )
 
-            return redirect(url_for("create_job_route"))
+            return redirect(
+                url_for("create_job_route")
+            )
 
         unique_link = uuid.uuid4().hex
 
@@ -429,7 +473,9 @@ def create_job_route():
                 unique_link
             )
 
-            job = get_job_by_link(unique_link)
+            job = get_job_by_link(
+                unique_link
+            )
 
             public_link = (
                 get_public_base_url()
@@ -445,11 +491,10 @@ def create_job_route():
                 public_link=public_link
             )
 
-        except Exception as error:
+        except Exception:
 
             app.logger.exception(
-                "Job creation failed: %s",
-                error
+                "Job creation failed."
             )
 
             flash(
@@ -457,19 +502,28 @@ def create_job_route():
                 "error"
             )
 
-            return redirect(url_for("create_job_route"))
+            return redirect(
+                url_for("create_job_route")
+            )
 
-    return render_template("create_job.html")
+    return render_template(
+        "create_job.html"
+    )
 
 
 # ==================================================
 # CANDIDATE REGISTRATION
 # ==================================================
 
-@app.route("/register/<unique_link>", methods=["GET", "POST"])
+@app.route(
+    "/register/<unique_link>",
+    methods=["GET", "POST"]
+)
 def candidate_register(unique_link):
 
-    job = get_job_by_link(unique_link)
+    job = get_job_by_link(
+        unique_link
+    )
 
     if not job:
 
@@ -478,24 +532,35 @@ def candidate_register(unique_link):
     if request.method == "POST":
 
         name = request.form.get(
-            "name", ""
+            "name",
+            ""
         ).strip()
 
         address = request.form.get(
-            "address", ""
+            "address",
+            ""
         ).strip()
 
         phone = request.form.get(
-            "phone", ""
+            "phone",
+            ""
         ).strip()
 
         email = request.form.get(
-            "email", ""
+            "email",
+            ""
         ).strip()
 
-        resume = request.files.get("resume")
+        resume = request.files.get(
+            "resume"
+        )
 
-        if not all([name, address, phone, email]):
+        if not all([
+            name,
+            address,
+            phone,
+            email
+        ]):
 
             flash(
                 "Please complete all fields.",
@@ -559,15 +624,14 @@ def candidate_register(unique_link):
                 filename
             )
 
-        except Exception as error:
+        except Exception:
 
             if os.path.exists(filepath):
 
                 os.remove(filepath)
 
             app.logger.exception(
-                "Candidate registration failed: %s",
-                error
+                "Candidate registration failed."
             )
 
             flash(
@@ -647,11 +711,10 @@ def results(job_id):
             job
         )
 
-    except Exception as error:
+    except Exception:
 
         app.logger.exception(
-            "Candidate ranking failed: %s",
-            error
+            "Candidate ranking failed."
         )
 
         ranked_candidates = []
@@ -661,7 +724,9 @@ def results(job_id):
             "error"
         )
 
-    total_applicants = get_candidate_count(job_id)
+    total_applicants = get_candidate_count(
+        job_id
+    )
 
     high_matches = sum(
         1
@@ -682,7 +747,10 @@ def results(job_id):
 # DELETE JOB
 # ==================================================
 
-@app.route("/delete-job/<int:job_id>", methods=["POST"])
+@app.route(
+    "/delete-job/<int:job_id>",
+    methods=["POST"]
+)
 @admin_required
 def delete_job(job_id):
 
@@ -691,7 +759,11 @@ def delete_job(job_id):
     try:
 
         job = connection.execute(
-            "SELECT id FROM jobs WHERE id = ?",
+            """
+            SELECT id
+            FROM jobs
+            WHERE id = ?
+            """,
             (job_id,)
         ).fetchone()
 
@@ -702,7 +774,9 @@ def delete_job(job_id):
                 "error"
             )
 
-            return redirect(url_for("dashboard"))
+            return redirect(
+                url_for("dashboard")
+            )
 
         candidates = connection.execute(
             """
@@ -745,11 +819,10 @@ def delete_job(job_id):
 
                     os.remove(filepath)
 
-                except OSError as error:
+                except OSError:
 
-                    app.logger.warning(
-                        "Could not delete resume: %s",
-                        error
+                    app.logger.exception(
+                        "Could not delete resume file."
                     )
 
         flash(
@@ -757,13 +830,12 @@ def delete_job(job_id):
             "success"
         )
 
-    except Exception as error:
+    except Exception:
 
         connection.rollback()
 
         app.logger.exception(
-            "Job deletion failed: %s",
-            error
+            "Job deletion failed."
         )
 
         flash(
@@ -775,11 +847,13 @@ def delete_job(job_id):
 
         connection.close()
 
-    return redirect(url_for("dashboard"))
+    return redirect(
+        url_for("dashboard")
+    )
 
 
 # ==================================================
-# SEND INTERVIEW EMAIL USING RESEND
+# SEND INTERVIEW EMAIL USING GMAIL SMTP
 # ==================================================
 
 @app.route(
@@ -792,6 +866,7 @@ def send_interview_email(candidate_id, job_id):
     connection = get_db_connection()
 
     try:
+
         candidate = connection.execute(
             """
             SELECT *
@@ -811,27 +886,130 @@ def send_interview_email(candidate_id, job_id):
         ).fetchone()
 
     finally:
+
         connection.close()
 
     if not candidate or not job:
-        return "Candidate or job not found.", 404
 
-    api_key = os.environ.get("RESEND_API_KEY")
-    email_from = os.environ.get("EMAIL_FROM")
+        flash(
+            "Candidate or job not found.",
+            "error"
+        )
 
-    if not api_key or not email_from:
-        flash("Resend email settings are missing.", "error")
-        return redirect(url_for("results", job_id=job_id))
+        return redirect(
+            url_for("dashboard")
+        )
 
     if not candidate["email"]:
-        flash("Candidate email address is missing.", "error")
-        return redirect(url_for("results", job_id=job_id))
 
-    email_data = {
-        "from": email_from,
-        "to": [candidate["email"]],
-        "subject": "Interview Invitation - " + job["title"],
-        "text": f"""
+        flash(
+            "Candidate email address is missing.",
+            "error"
+        )
+
+        return redirect(
+            url_for(
+                "results",
+                job_id=job_id
+            )
+        )
+
+    # Gmail SMTP configuration
+
+    mail_server = os.environ.get(
+        "MAIL_SERVER",
+        "smtp.gmail.com"
+    )
+
+    try:
+
+        mail_port = int(
+            os.environ.get(
+                "MAIL_PORT",
+                "587"
+            )
+        )
+
+    except ValueError:
+
+        flash(
+            "Invalid MAIL_PORT configuration.",
+            "error"
+        )
+
+        return redirect(
+            url_for(
+                "results",
+                job_id=job_id
+            )
+        )
+
+    mail_username = os.environ.get(
+        "MAIL_USERNAME",
+        os.environ.get(
+            "EMAIL_ADDRESS",
+            ""
+        )
+    )
+
+    mail_password = os.environ.get(
+        "MAIL_PASSWORD",
+        ""
+    )
+
+    sender_email = os.environ.get(
+        "EMAIL_FROM",
+        os.environ.get(
+            "EMAIL_ADDRESS",
+            mail_username
+        )
+    )
+
+    use_tls = os.environ.get(
+        "MAIL_USE_TLS",
+        "true"
+    ).strip().lower() in (
+        "true",
+        "1",
+        "yes"
+    )
+
+    if (
+        not mail_username
+        or not mail_password
+        or not sender_email
+    ):
+
+        app.logger.error(
+            "Gmail SMTP settings are incomplete."
+        )
+
+        flash(
+            "Gmail email settings are missing. Check Render environment variables.",
+            "error"
+        )
+
+        return redirect(
+            url_for(
+                "results",
+                job_id=job_id
+            )
+        )
+
+    # Create interview email
+
+    message = EmailMessage()
+
+    message["Subject"] = (
+        "Interview Invitation - "
+        + job["title"]
+    )
+
+    message["From"] = sender_email
+
+    message["To"] = candidate["email"]
+
+    message.set_content(f"""
 Dear {candidate["name"]},
 
 Congratulations!
@@ -848,49 +1026,74 @@ Thank you.
 
 Recruitment Team
 AI Resume Screening and Ranking System
-"""
-    }
+""")
+
+    # Send email using Gmail SMTP
 
     try:
-        payload = json.dumps(email_data).encode("utf-8")
 
-        req = urllib.request.Request(
-            "https://api.resend.com/emails",
-            data=payload,
-            headers={
-                "Authorization": "Bearer " + api_key,
-                "Content-Type": "application/json"
-            },
-            method="POST"
-        )
+        with smtplib.SMTP(
+            mail_server,
+            mail_port,
+            timeout=30
+        ) as server:
 
-        with urllib.request.urlopen(req, timeout=30) as response:
-            result = json.loads(response.read().decode("utf-8"))
+            server.ehlo()
+
+            if use_tls:
+
+                server.starttls()
+
+                server.ehlo()
+
+            server.login(
+                mail_username,
+                mail_password
+            )
+
+            server.send_message(
+                message
+            )
 
         app.logger.info(
-            "Resend accepted email. ID: %s",
-            result.get("id", "unknown")
+            "Gmail SMTP accepted email for candidate ID %s, job ID %s",
+            candidate_id,
+            job_id
         )
 
-        flash("Interview invitation sent successfully!", "success")
-
-    except urllib.error.HTTPError as error:
-        details = error.read().decode("utf-8", errors="replace")
-        app.logger.error(
-            "Resend API error %s: %s",
-            error.code,
-            details
-        )
         flash(
-            "Resend could not send the email. Check Render logs.",
+            "Interview invitation sent successfully!",
+            "success"
+        )
+
+    except smtplib.SMTPAuthenticationError:
+
+        app.logger.exception(
+            "Gmail SMTP authentication failed."
+        )
+
+        flash(
+            "Gmail authentication failed. Check your Gmail App Password.",
             "error"
         )
 
     except Exception:
-        app.logger.exception("Resend email sending failed.")
-        flash("Unable to send email. Check Resend configuration.", "error")
 
-    return redirect(url_for("results", job_id=job_id))
+        app.logger.exception(
+            "Gmail SMTP email sending failed."
+        )
+
+        flash(
+            "Unable to send email. Please check Gmail SMTP settings and Render logs.",
+            "error"
+        )
+
+    return redirect(
+        url_for(
+            "results",
+            job_id=job_id
+        )
+    )
 
 
 # ==================================================
@@ -902,7 +1105,9 @@ def logout():
 
     session.clear()
 
-    response = redirect(url_for("admin_login"))
+    response = redirect(
+        url_for("admin_login")
+    )
 
     response.headers["Cache-Control"] = (
         "no-cache, no-store, must-revalidate"
@@ -980,7 +1185,9 @@ def page_not_found(error):
 
     if os.path.isfile(template_path):
 
-        return render_template("404.html"), 404
+        return render_template(
+            "404.html"
+        ), 404
 
     return "Page not found.", 404
 
@@ -1001,7 +1208,10 @@ def file_too_large(error):
 if __name__ == "__main__":
 
     port = int(
-        os.environ.get("PORT", 5000)
+        os.environ.get(
+            "PORT",
+            5000
+        )
     )
 
     app.run(
