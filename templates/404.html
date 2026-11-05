@@ -1,0 +1,114 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Page Not Found | ResumeRank</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+            background:
+                radial-gradient(circle at top left, #312e81 0%, #111827 45%, #020617 100%);
+            color: #ffffff;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 600px;
+            padding: 45px 30px;
+            text-align: center;
+            background: rgba(15, 23, 42, 0.92);
+            border: 1px solid rgba(255, 255, 255, 0.10);
+            border-radius: 24px;
+            box-shadow: 0 25px 70px rgba(0, 0, 0, 0.35);
+        }
+
+        .icon {
+            font-size: 65px;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            margin: 0 0 15px;
+            font-size: 32px;
+            color: #c4b5fd;
+        }
+
+        p {
+            color: #cbd5e1;
+            font-size: 15px;
+            line-height: 1.8;
+            margin-bottom: 25px;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 13px 24px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            color: #ffffff;
+            text-decoration: none;
+            font-weight: 700;
+        }
+
+        .button:hover {
+            opacity: 0.9;
+        }
+
+        .footer {
+            margin-top: 25px;
+            font-size: 12px;
+            color: #94a3b8;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 35px 22px;
+            }
+
+            h1 {
+                font-size: 26px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <main class="container">
+
+        <div class="icon">🤖</div>
+
+        <h1>Page Not Found</h1>
+
+        <p>
+            Sorry, the page or registration link you are trying to
+            access could not be found. The job registration link
+            may be incorrect, expired or no longer available.
+        </p>
+
+        <a href="{{ url_for('admin_login') }}" class="button">
+            Back to ResumeRank
+        </a>
+
+        <div class="footer">
+            ResumeRank — BCA Final-Year Academic Project
+        </div>
+
+    </main>
+
+</body>
+</html>

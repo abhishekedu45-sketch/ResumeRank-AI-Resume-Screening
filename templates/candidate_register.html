@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -78,13 +79,7 @@
 
         .job-box h2 {
             font-size: 20px;
-            margin-bottom: 8px;
-        }
-
-        .job-box p {
-            color: #cbd5e1;
-            font-size: 14px;
-            line-height: 1.6;
+            margin-bottom: 0;
         }
 
         .form-group {
@@ -199,16 +194,11 @@
         <h1>Candidate Registration</h1>
 
         <p class="subtitle">
-            Submit your details and resume. Our AI system will analyze your
-            resume against the job requirements.
+            Submit your details and resume to apply for this job.
         </p>
 
         <div class="job-box">
             <h2>{{ job.title }}</h2>
-
-            <p>
-                {{ job.description }}
-            </p>
         </div>
 
         {% with messages = get_flashed_messages(with_categories=true) %}
@@ -278,8 +268,7 @@
                 >
 
                 <div class="help">
-                    Your resume email will be used for selection communication
-                    when available.
+                    Your email will be used for selection communication.
                 </div>
             </div>
 

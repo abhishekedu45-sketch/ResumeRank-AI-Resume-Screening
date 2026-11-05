@@ -1,8 +1,7 @@
 Flask
+Werkzeug
 PyPDF2
 scikit-learn
-Flask-Mail
+numpy
+gunicorn
 python-dotenv
-resend
-requests
-Flask-WTF>=1.2,<2

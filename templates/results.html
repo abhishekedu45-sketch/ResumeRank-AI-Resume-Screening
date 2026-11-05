@@ -6,7 +6,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>AI Resume Ranking Results</title>
+    <title>ResumeRank | Candidate Evaluation Results</title>
+    <meta name="description" content="Candidate evaluation and AI-assisted resume matching results for the ResumeRank student project.">
 
     <style>
         * {
@@ -98,6 +99,7 @@
             background: rgba(59,130,246,0.08);
             border: 1px solid rgba(59,130,246,0.18);
             color: #bfdbfe;
+            line-height: 1.6;
         }
 
         .stats {
@@ -242,6 +244,12 @@
             font-size: 12px;
         }
 
+        .rejection-status {
+            color: #fca5a5;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
         .flash {
             margin-bottom: 20px;
             padding: 15px 18px;
@@ -284,8 +292,8 @@
 
 <nav class="navbar">
     <div class="logo">
-        🤖 AI
-        <span>Resume Screening</span>
+        🤖 ResumeRank
+        <span>Student Project</span>
     </div>
 
     <div class="nav-links">
@@ -299,11 +307,13 @@
     <div class="top">
         <div>
             <h1>{{ job.title }}</h1>
-            <p class="subtitle">AI Resume Ranking Results</p>
+            <p class="subtitle">
+                ResumeRank — AI-Assisted Candidate Evaluation Results
+            </p>
         </div>
 
         <div class="ai-badge">
-            🤖 AI POWERED SCREENING
+            🤖 AI-ASSISTED SCREENING
         </div>
     </div>
 
@@ -318,11 +328,15 @@
     {% endwith %}
 
     <div class="info-box">
-        💡 Candidates with a <strong>70% or higher</strong>
-        match score are eligible for the interview email.
+        💡 <strong>Candidate Evaluation:</strong>
+        Candidates scoring below <strong>70%</strong> are processed
+        for automatic rejection emails.
 
-        The email will be sent to the
-        <strong>email address provided by the candidate during registration.</strong>
+        Candidates scoring <strong>70% or higher</strong> remain eligible
+        for your manual interview email decision.
+
+        The AI-assisted match score supports administrator review
+        and is not an automatic hiring decision.
     </div>
 
     <div class="stats">
@@ -420,8 +434,11 @@
                                             onsubmit="return confirm('Send interview email to {{ candidate.email }}?');"
                                         >
 
-                                            <!-- CSRF SECURITY TOKEN -->
-                                            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                                            <input
+                                                type="hidden"
+                                                name="csrf_token"
+                                                value="{{ csrf_token }}"
+                                            >
 
                                             <button
                                                 type="submit"
@@ -434,8 +451,10 @@
 
                                     {% else %}
 
-                                        <span class="not-eligible">
-                                            Not Eligible
+                                        <span class="rejection-status">
+                                            Rejection email process
+                                            <br>
+                                            Automatic — Below 70%
                                         </span>
 
                                     {% endif %}

@@ -1,87 +1,45 @@
+
 import os
-import PyPDF2
+from PyPDF2 import PdfReader
 
 
-# ============================================================
-# EXTRACT TEXT FROM PDF RESUME
-# ============================================================
+def extract_text_from_pdf(file_path):
+    """Extract readable text from an uploaded PDF resume."""
 
-def extract_text_from_pdf(pdf_path):
-
-    text = ""
+    if not os.path.exists(file_path):
+        raise FileNotFoundError("Resume file not found.")
 
     try:
+        reader = PdfReader(file_path)
 
-        # Check whether the PDF file exists
-        if not os.path.exists(pdf_path):
+        if reader.is_encrypted:
+            try:
+                reader.decrypt("")
+            except Exception:
+                raise ValueError("This PDF is password protected.")
 
-            print("Resume PDF not found:", pdf_path)
+        text = []
 
-            return ""
+        for page in reader.pages:
+            page_text = page.extract_text() or ""
+            text.append(page_text)
 
-        # Check whether it is actually a file
-        if not os.path.isfile(pdf_path):
+        extracted_text = "\n".join(text).strip()
 
-            print("Invalid resume file path:", pdf_path)
+        if not extracted_text:
+            raise ValueError(
+                "No readable text found. Please upload a text-based PDF."
+            )
 
-            return ""
+        return extracted_text
 
-        # Open PDF file
-        with open(pdf_path, "rb") as file:
-
-            pdf_reader = PyPDF2.PdfReader(file)
-
-            # Check whether PDF is encrypted
-            if pdf_reader.is_encrypted:
-
-                try:
-
-                    decrypt_status = pdf_reader.decrypt("")
-
-                    if not decrypt_status:
-
-                        print("Unable to decrypt PDF")
-
-                        return ""
-
-                except Exception:
-
-                    print("Unable to read encrypted PDF")
-
-                    return ""
-
-            # Check whether PDF contains pages
-            if len(pdf_reader.pages) == 0:
-
-                print("PDF contains no pages")
-
-                return ""
-
-            # Extract text from every page
-            for page_number, page in enumerate(pdf_reader.pages):
-
-                try:
-
-                    page_text = page.extract_text()
-
-                    if page_text:
-
-                        text += page_text + "\n"
-
-                except Exception as error:
-
-                    print(
-                        f"Error extracting page {page_number + 1}:",
-                        error
-                    )
-
-                    continue
-
-        # Return extracted text
-        return text.strip()
-
+    except ValueError:
+        raise
     except Exception as error:
+        raise ValueError(f"Unable to read PDF: {error}")
 
-        print("Resume PDF extraction error:", error)
 
-        return ""
+def parse_resume(file_path):
+    """Return extracted resume text."""
+
+    return extract_text_from_pdf(file_path)

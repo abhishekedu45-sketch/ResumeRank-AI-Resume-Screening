@@ -1,10 +1,12 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Create Job Opening | ResumeRank</title>
+    <title>Create Job Opening | ResumeRank Student Project</title>
+    <meta name="description" content="Create a job opening in the ResumeRank student project and define requirements for AI-assisted resume screening.">
 
     <style>
         * {
@@ -217,12 +219,13 @@
     <div class="card">
 
         <div class="header">
-            <div class="badge">AI-POWERED RECRUITMENT</div>
+            <div class="badge">AI-POWERED STUDENT PROJECT</div>
 
             <h1>Create Job Opening</h1>
 
             <p class="subtitle">
-                Add the job requirements and let AI screen and rank candidates.
+                Create a job opening in the ResumeRank student project
+                and define the requirements used for AI-assisted resume screening.
             </p>
         </div>
 
@@ -236,8 +239,8 @@
             {% endif %}
         {% endwith %}
 
-        <!-- IMPORTANT: POST must go to create_job_page -->
         <form method="POST" action="{{ url_for('create_job_page') }}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
 
             <div class="form-group">
                 <label>
@@ -264,7 +267,8 @@
                 ></textarea>
 
                 <div class="help">
-                    Provide detailed information so the AI screening system can compare candidate resumes.
+                    Add job details so the project can compare candidate resumes
+                    with the requirements.
                 </div>
             </div>
 
@@ -293,9 +297,9 @@
 
         <div class="info-box">
             🤖 <strong>AI Screening:</strong>
-            After candidates submit their resumes, ResumeRank will extract
-            resume text, identify relevant skills and compare them with the
-            requirements of this job.
+            ResumeRank is a student project that extracts text from submitted
+            resumes, identifies relevant skills and compares them with the
+            requirements of the job to support candidate evaluation.
         </div>
 
     </div>
