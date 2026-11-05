@@ -4,3 +4,5 @@ scikit-learn
 Flask-Mail
 python-dotenv
 resend
+requests
+Flask-WTF>=1.2,<2
