@@ -2,9 +2,9 @@
 import os
 import re
 import secrets
-import smtplib
-import logging
-from email.message import EmailMessage
+import json
+import urllib.request
+import urllib.error
 from functools import wraps
 
 from flask import (
@@ -42,7 +42,6 @@ app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
 if os.environ.get("RENDER_EXTERNAL_URL"):
     app.config["SESSION_COOKIE_SECURE"] = True
 
-# Set your own credentials in the .env file.
 ADMIN_USERNAME = os.environ.get("ADMIN_USERNAME", "")
 ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "")
 
@@ -63,34 +62,53 @@ def admin_required(function):
 
 
 # --------------------------------------------------
-# GMAIL EMAIL
+# BREVO EMAIL API
 # --------------------------------------------------
 
 def send_gmail_email(to_email, subject, message_text):
-    gmail_address = os.environ.get("GMAIL_ADDRESS", "").strip()
-    gmail_password = os.environ.get(
-        "GMAIL_APP_PASSWORD", ""
-    ).replace(" ", "").strip()
+    api_key = os.environ.get("BREVO_API_KEY", "").strip()
+    sender_email = os.environ.get("BREVO_SENDER_EMAIL", "").strip()
 
-    if not gmail_address or not gmail_password:
-        app.logger.warning("Gmail settings are not configured.")
+    if not api_key or not sender_email:
+        app.logger.error("Brevo configuration is missing.")
         return False
 
-    email = EmailMessage()
-    email["Subject"] = subject
-    email["From"] = gmail_address
-    email["To"] = to_email
-    email.set_content(message_text)
+    payload = {
+        "sender": {
+            "name": "ResumeRank Recruitment Team",
+            "email": sender_email
+        },
+        "to": [{"email": to_email}],
+        "subject": subject,
+        "textContent": message_text
+    }
+
+    data = json.dumps(payload).encode("utf-8")
+
+    req = urllib.request.Request(
+        "https://api.brevo.com/v3/smtp/email",
+        data=data,
+        headers={
+            "accept": "application/json",
+            "api-key": api_key,
+            "content-type": "application/json"
+        },
+        method="POST"
+    )
 
     try:
-        with smtplib.SMTP("smtp.gmail.com", 587, timeout=20) as server:
-            server.starttls()
-            server.login(gmail_address, gmail_password)
-            server.send_message(email)
-        return True
+        with urllib.request.urlopen(req, timeout=25) as response:
+            return response.status in (200, 201, 202)
+
+    except urllib.error.HTTPError as error:
+        app.logger.error(
+            "Brevo email failed: %s",
+            error.read().decode("utf-8", errors="replace")
+        )
+        return False
 
     except Exception:
-        app.logger.exception("Gmail sending failed.")
+        app.logger.exception("Brevo email sending failed.")
         return False
 
 
@@ -285,7 +303,6 @@ def create_job_page():
         unique_link = secrets.token_urlsafe(20)
 
         try:
-            # Save the job and get its database ID.
             job_id = create_job(
                 title,
                 description,
@@ -293,7 +310,6 @@ def create_job_page():
                 unique_link
             )
 
-            # Retrieve the saved job from SQLite.
             job = get_job(job_id)
 
             if job is None:
@@ -305,7 +321,6 @@ def create_job_page():
                 f"{public_base_url()}/register/{unique_link}"
             )
 
-            # IMPORTANT: job is passed to job_created.html.
             return render_template(
                 "job_created.html",
                 job=job,
@@ -414,7 +429,6 @@ def candidate_register(unique_link):
         try:
             resume.save(resume_path)
 
-            # Validate that the uploaded PDF is readable.
             extract_text_from_pdf(resume_path)
 
             create_candidate(
@@ -426,32 +440,11 @@ def candidate_register(unique_link):
                 unique_filename
             )
 
-            message = f"""Dear {name},
-
-Thank you for applying for {job['title']}.
-
-Your application and resume have been received successfully.
-
-Regards,
-ResumeRank Recruitment Team
-"""
-
-            sent = send_gmail_email(
-                email,
-                f"Application Received - {job['title']}",
-                message
+            # Registration does not send an automatic email.
+            flash(
+                "Application submitted successfully.",
+                "success"
             )
-
-            if sent:
-                flash(
-                    "Application submitted successfully. Confirmation email sent.",
-                    "success"
-                )
-            else:
-                flash(
-                    "Application submitted successfully. Email confirmation could not be sent.",
-                    "success"
-                )
 
             return render_template(
                 "upload_success.html",
@@ -595,7 +588,7 @@ ResumeRank Recruitment Team
         flash("Interview email sent successfully.", "success")
     else:
         flash(
-            "Email could not be sent. Check Gmail configuration.",
+            "Email could not be sent. Check Brevo API key, sender verification and Render logs.",
             "error"
         )
 
