@@ -1,7 +1,7 @@
 import os
 import uuid
 import sqlite3
-import resend
+import requests
 
 from dotenv import load_dotenv
 load_dotenv()
@@ -514,10 +514,8 @@ def delete_job(job_id):
         connection.close()
 
     return redirect(url_for("dashboard"))
-
-
 # ==================================================
-# SEND INTERVIEW EMAIL USING RESEND API
+# SEND INTERVIEW EMAIL USING BREVO API
 # ==================================================
 
 @app.route(
@@ -554,16 +552,14 @@ def send_interview_email(candidate_id, job_id):
         flash("Candidate email address is missing.", "error")
         return redirect(url_for("results", job_id=job_id))
 
-    resend_api_key = os.environ.get("RESEND_API_KEY", "").strip()
-    sender_email = os.environ.get(
-        "RESEND_FROM_EMAIL",
-        "onboarding@resend.dev"
-    ).strip()
+    brevo_api_key = os.environ.get("BREVO_API_KEY", "").strip()
+    sender_email = os.environ.get("BREVO_SENDER_EMAIL", "").strip()
+    sender_name = os.environ.get("BREVO_SENDER_NAME", "ResumeRank").strip()
 
-    if not resend_api_key or not sender_email:
-        app.logger.error("Resend API settings are incomplete.")
+    if not brevo_api_key or not sender_email:
+        app.logger.error("Brevo API settings are incomplete.")
         flash(
-            "Email settings are missing. Check RESEND_API_KEY and RESEND_FROM_EMAIL.",
+            "Email settings are missing. Check BREVO_API_KEY and BREVO_SENDER_EMAIL in Render.",
             "error"
         )
         return redirect(url_for("results", job_id=job_id))
@@ -583,40 +579,70 @@ Please contact our recruitment team for interview details.
 Thank you.
 
 Recruitment Team
+{sender_name}
 AI Resume Screening and Ranking System
 """
 
+    payload = {
+        "sender": {
+            "name": sender_name,
+            "email": sender_email
+        },
+        "to": [
+            {
+                "email": candidate["email"],
+                "name": candidate["name"]
+            }
+        ],
+        "subject": f"Interview Invitation - {job['title']}",
+        "textContent": email_text
+    }
+
     try:
-        resend.api_key = resend_api_key
-
-        response = resend.Emails.send({
-            "from": sender_email,
-            "to": [candidate["email"]],
-            "subject": f"Interview Invitation - {job['title']}",
-            "text": email_text
-        })
-
-        app.logger.info(
-            "Resend accepted interview email for candidate ID %s, job ID %s. Response: %s",
-            candidate_id,
-            job_id,
-            response
+        response = requests.post(
+            "https://api.brevo.com/v3/smtp/email",
+            headers={
+                "accept": "application/json",
+                "api-key": brevo_api_key,
+                "content-type": "application/json"
+            },
+            json=payload,
+            timeout=25
         )
 
-        flash("Interview invitation sent successfully!", "success")
+        if response.status_code not in (200, 201, 202):
+            app.logger.error(
+                "Brevo rejected interview email. Status: %s; Response: %s",
+                response.status_code,
+                response.text[:1000]
+            )
+            flash(
+                "Brevo could not send the email. Check the Brevo sender settings and Render logs.",
+                "error"
+            )
+        else:
+            app.logger.info(
+                "Brevo accepted interview email for candidate ID %s, job ID %s. Response: %s",
+                candidate_id,
+                job_id,
+                response.text[:500]
+            )
+            flash("Interview invitation sent successfully!", "success")
 
-    except Exception:
+    except requests.RequestException:
         app.logger.exception(
-            "Resend API email sending failed for candidate ID %s, job ID %s",
+            "Brevo API request failed for candidate ID %s, job ID %s",
             candidate_id,
             job_id
         )
         flash(
-            "Unable to send email. Please check Resend API settings and Render logs.",
+            "Unable to connect to Brevo. Please check Render logs and try again.",
             "error"
         )
 
     return redirect(url_for("results", job_id=job_id))
+
+
 
 
 # ==================================================
